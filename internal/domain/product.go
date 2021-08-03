@@ -1,9 +1,11 @@
 package domain
 
 type Product struct {
-	ID    int     `json:"id"`
-	Name  string  `json:"name"`
-	Type  string  `json:"type"`
-	Count int     `json:"count"`
-	Price float64 `json:"price"`
+	ID               int     `json:"id"`
+	Name             string  `json:"name"`
+	Type             string  `json:"type"`
+	Count            int     `json:"count"`
+	Price            float64 `json:"price"`
+	Warehouse        string  `json:"warehouse"`
+	WarehouseAddress string  `json:"warehouse_address"`
 }
