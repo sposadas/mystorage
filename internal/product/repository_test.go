@@ -25,6 +25,28 @@ func TestStore(t *testing.T) {
 	assert.Equal(t, product.Name, productResult.Name)
 }
 
+func TestGetOne(t *testing.T) {
+	id := 2
+	product := domain.Product{
+		Name: "testing",
+	}
+
+	myRepository := NewRepository()
+	productResult := myRepository.GetOne(id)
+
+	assert.Equal(t, product.Name, productResult.Name)
+	assert.Equal(t, id, productResult.ID)
+}
+
+func TestDelete(t *testing.T) {
+	id := 3
+
+	myRepository := NewRepository()
+	err := myRepository.Delete(id)
+
+	assert.Nil(t, err)
+}
+
 func TestGetAll(t *testing.T) {
 	size := 0
 	myRepository := NewRepository()
