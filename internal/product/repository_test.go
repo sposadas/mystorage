@@ -96,6 +96,23 @@ func TestUpdate(t *testing.T) {
 	assert.Equal(t, product, productResult)
 }
 
+func TestGetFullData(t *testing.T) {
+	id := 2
+
+	warehouse := domain.Warehouse{
+		Name: "ML-02",
+		Address: "Capital 222",
+	}
+
+	myRepository := NewRepository()
+	productResult := myRepository.GetFullData(id)
+
+	assert.NotNil(t, productResult)
+	assert.Equal(t, id, productResult.ID)
+	assert.Equal(t, warehouse.Name, productResult.Warehouse)
+	assert.Equal(t, warehouse.Address, productResult.WarehouseAddress)
+}
+
 func TestGetByName(t *testing.T) {
 	name := "testing"
 

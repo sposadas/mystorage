@@ -32,7 +32,7 @@ const (
 	GetProductByName             = "SELECT p.id, p.name, p.type, p.count, p.price FROM products p WHERE name = ?"
 	UpdateProduct                = "UPDATE products SET name = ?, type = ?, count = ?, price = ? WHERE id = ?"
 	DeleteProduct                = "DELETE FROM products WHERE id = ?"
-	SelectProductsWarehousesJoin = "SELECT p.id, p.name, p.type, p.count, p.price, w.name, w.address FROM products p INNER JOIN warehouses ON p.id_warehouse = w.id where p.id = ?"
+	SelectProductsWarehousesJoin = "SELECT p.id, p.name, p.type, p.count, p.price, w.name, w.address FROM products p INNER JOIN warehouses w ON p.id_warehouse = w.id where p.id = ?"
 )
 
 func (r *repository) Store(product domain.Product) (domain.Product, error) {
@@ -135,7 +135,6 @@ func (r *repository) GetFullData(id int) domain.Product {
 		return product
 	}
 	for rows.Next() {
-		var product domain.Product
 		if err := rows.Scan(&product.ID, &product.Name, &product.Type, &product.Count, &product.Price, &product.Warehouse, &product.WarehouseAddress); err != nil {
 			log.Println(err.Error())
 			return product
