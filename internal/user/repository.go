@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"github.com/google/uuid"
 	"github.com/sposadas/mystorage/internal/domain"
 	"log"
@@ -12,6 +13,8 @@ type Repository interface {
 	Store(ctx context.Context, user *domain.User) (*domain.User, error)
 	GetOne(ctx context.Context, uuid uuid.UUID) (*domain.User, error)
 	Update(ctx context.Context, user *domain.User) (*domain.User, error)
+	Delete(ctx context.Context, uuid uuid.UUID) error
+	GetAll(ctx context.Context) ([]*domain.User, error)
 }
 
 type repository struct {
@@ -28,6 +31,7 @@ const (
 	InsertUser = "INSERT INTO users(uuid, username, email, active) VALUES (?, ?, ?, ?)"
 	GetOneUser = "SELECT u.id, u.uuid, u.username, u.email, u.active FROM users u WHERE u.uuid = ?"
 	UpdateUser = "UPDATE users SET uuid = ?, username = ?, email = ?, active = ? WHERE id = ?"
+	DeleteUser = "DELETE FROM users WHERE uuid = ?"
 )
 
 func (r *repository) Store(ctx context.Context, user *domain.User) (*domain.User, error) {
@@ -85,4 +89,28 @@ func (r *repository) Update(ctx context.Context, user *domain.User) (*domain.Use
 	}
 
 	return user, nil
+}
+
+func (r *repository) Delete(ctx context.Context, uuid uuid.UUID) error {
+	result, err := r.db.ExecContext(ctx, DeleteUser, uuid)
+	if err != nil {
+		return err
+	}
+
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rows != 1 {
+		return fmt.Errorf("%d users deleted", rows)
+	}
+
+	return nil
+}
+
+func (r *repository) GetAll(ctx context.Context) ([]*domain.User, error) {
+
+
+	return nil, nil
 }

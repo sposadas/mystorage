@@ -71,3 +71,33 @@ func Test_sqlRepository_Update(t *testing.T) {
 	assert.NotEqual(t, user.Email, getResult.Email)
 	assert.NotEqual(t, user.Active, getResult.Active)
 }
+
+func TestDelete(t *testing.T) {
+	db, err := util.InitDb()
+	assert.NoError(t, err)
+
+	myRepository, ctx := NewRepository(db), context.TODO()
+
+	userId := uuid.New()
+	user := domain.User{
+		UUID: userId,
+		Username: "testing",
+		Email: "test@mercadolibre.com",
+	}
+
+	_, err = myRepository.Store(ctx, &user)
+	assert.NoError(t, err)
+
+	getResult, err := myRepository.GetOne(ctx, userId)
+	assert.NoError(t, err)
+	assert.Equal(t, user.UUID, getResult.UUID)
+	assert.Equal(t, user.Username, getResult.Username)
+	assert.Equal(t, user.Email, getResult.Email)
+
+	err = myRepository.Delete(ctx, userId)
+	assert.NoError(t, err)
+
+	getResult, err = myRepository.GetOne(ctx, userId)
+	assert.NoError(t, err)
+	assert.Nil(t, getResult)
+}
