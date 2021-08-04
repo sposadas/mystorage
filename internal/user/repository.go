@@ -32,6 +32,7 @@ const (
 	GetOneUser = "SELECT u.id, u.uuid, u.username, u.email, u.active FROM users u WHERE u.uuid = ?"
 	UpdateUser = "UPDATE users SET uuid = ?, username = ?, email = ?, active = ? WHERE id = ?"
 	DeleteUser = "DELETE FROM users WHERE uuid = ?"
+	GetUsers   = "SELECT u.id, u.uuid, u.username, u.email, u.active FROM users u"
 )
 
 func (r *repository) Store(ctx context.Context, user *domain.User) (*domain.User, error) {
@@ -110,7 +111,21 @@ func (r *repository) Delete(ctx context.Context, uuid uuid.UUID) error {
 }
 
 func (r *repository) GetAll(ctx context.Context) ([]*domain.User, error) {
+	result := make([]*domain.User, 0)
+	rows, err := r.db.QueryContext(ctx, GetUsers)
 
+	if err != nil {
+		return nil, err
+	}
 
-	return nil, nil
+	for rows.Next() {
+		user := new(domain.User)
+		err = rows.Scan(&user.ID, &user.UUID, &user.Username, &user.Email, &user.Active)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, user)
+	}
+
+	return result, nil
 }

@@ -94,10 +94,18 @@ func TestDelete(t *testing.T) {
 	assert.Equal(t, user.Username, getResult.Username)
 	assert.Equal(t, user.Email, getResult.Email)
 
+	allUsers, err := myRepository.GetAll(ctx)
+	assert.NoError(t, err)
+	assert.Equal(t, 1, len(allUsers))
+
 	err = myRepository.Delete(ctx, userId)
 	assert.NoError(t, err)
 
 	getResult, err = myRepository.GetOne(ctx, userId)
 	assert.NoError(t, err)
 	assert.Nil(t, getResult)
+
+	allUsers, err = myRepository.GetAll(ctx)
+	assert.NoError(t, err)
+	assert.Equal(t, 0, len(allUsers))
 }
